@@ -27,7 +27,7 @@ export default function Card() {
 
   return (
     <div>
-      <Button onClick={handleOpen}>Complete an Instance</Button>
+      <Button margin='50px' variant='contained' onClick={handleOpen}>Complete an Instance</Button>
       <Modal
         open={open}
         onClose={handleClose}
@@ -51,3 +51,6 @@ export default function Card() {
     </div>
   );
 }
+
+// write handle onChange for inputs
+// update react states based on text input -> figure out a way to use those states as db entries
