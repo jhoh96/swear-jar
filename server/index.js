@@ -4,28 +4,47 @@ const app = express();
 const mysql = require("mysql");
 const bodyParser = require('body-parser')
 const cors = require('cors')
+require('dotenv').config()
 
-const db = mysql.createPool({
+/*
+* info
+*/
+
+const DB_LOGIN = process.env.DB_LOGIN;
+const DB_PASSWORD = process.env.DB_PASSWORD;
+
+
+const db = mysql.createConnection({
   host: "localhost",
-  user: "root",
-  password: "password",
+  user: DB_LOGIN,
+  password: DB_PASSWORD,
   database: "pool",
 });
 
+//check db connection
+db.connect((err) => {
+  if(err) {
+    console.log(err)
+  }
+  console.log('server successfully connected')
+})
+
 //cors
-app.use(cors)
+app.use(cors())
+
+app.use(express.json())
 
 //body parser 
 app.use(bodyParser.urlencoded({extended: true}))
 
 // Routing for the API
-app.post('/api/insert', (req, res)=> {
+app.post("/api/insert", (req, res)=> {
 
     const userName = req.body.userName;
     const instanceWord = req.body.instanceWord;
     const instanceCost = req.body.instanceCost;
 
-    const sqlInsert = "INSERT INTO pool (userName, instanceWord, instanceCost) VALUES (?,?,?)"
+    const sqlInsert = "INSERT INTO pool_instances (userName, instanceWord, instanceCost) VALUES (?,?,?)"
     db.query(sqlInsert, [userName, instanceWord, instanceCost], (err, result) => {
         console.log(err)
     })

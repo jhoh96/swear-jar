@@ -56,7 +56,7 @@ const rows = [
 
 export default function DataTable() {
   return (
-    <Box sx={{ height: 400, width: '100%' }} className='data-box'>
+    <Box sx={{ height: '100%', width: '100%' }} className='data-box'>
       <DataGrid
         rows={rows}
         columns={columns}
