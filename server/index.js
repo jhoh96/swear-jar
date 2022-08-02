@@ -10,15 +10,16 @@ require('dotenv').config()
 * info
 */
 
+const DB_HOST = process.env.DB_HOST;
 const DB_LOGIN = process.env.DB_LOGIN;
 const DB_PASSWORD = process.env.DB_PASSWORD;
-
+const DB_DATABASE = process.env.DB_DATABASE;
 
 const db = mysql.createConnection({
-  host: "localhost",
+  host: DB_HOST,
   user: DB_LOGIN,
   password: DB_PASSWORD,
-  database: "pool",
+  database: DB_DATABASE,
 });
 
 //check db connection
@@ -37,7 +38,13 @@ app.use(express.json())
 //body parser 
 app.use(bodyParser.urlencoded({extended: true}))
 
-// Routing for the API
+/**
+ * 
+ *  API STUFF HERE
+ * 
+ */
+
+// Posting to database (INSERT)
 app.post("/api/insert", (req, res)=> {
 
     const userName = req.body.userName;
@@ -48,6 +55,17 @@ app.post("/api/insert", (req, res)=> {
     db.query(sqlInsert, [userName, instanceWord, instanceCost], (err, result) => {
         console.log(err)
     })
+})
+
+// Getting all data from db (GET)
+app.get('/api/get', (req, res) => {
+  const sqlSelect = "SELECT * FROM pool_instances"
+  db.query(sqlSelect, (err, result) => {
+    if(err) {
+      console.log(err)
+    }
+    res.send(result)
+})
 })
 
 
