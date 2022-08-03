@@ -1,6 +1,6 @@
 import React from "react";
-import Card from "../components/Card.jsx";
-import DataTable from "../components/DataTable.jsx"
+import Card from "../components/Card.tsx";
+import DataTable from "../components/DataTable.tsx"
 
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";

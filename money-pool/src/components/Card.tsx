@@ -46,7 +46,10 @@ export default function Card() {
     }).then(() => {
         alert('successful post/insert')
     });
+    
     handleClose()
+    // This due to poor state management
+    window.location.reload(false);
   };
 
   return (
