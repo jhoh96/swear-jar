@@ -4,7 +4,9 @@ import { scaleLog } from "@visx/scale";
 import { Wordcloud } from "@visx/wordcloud";
 import { totoAfricaLyrics } from "./text.fixture";
 import { totalInstanceWords } from "../assets/words.ts";
+import { words as mappedWords } from "../assets/testWords.ts";
 import Axios from "axios";
+import Button from "@mui/material/Button";
 
 interface ExampleProps {
   width: number;
@@ -18,66 +20,70 @@ export interface WordData {
 }
 
 const colors = ["#143059", "#2F6B9A", "#82a6c2"];
-const totalWordCount = new Array();
-var totalWordString = ''
 
-function wordFreq(text: string): WordData[] {
-  const words: string[] = text.replace(/\./g, "").split(/\s/);
-  // const words: string[] = text.join('')
-
-  const freqMap: Record<string, number> = {};
-
-  for (const w of words) {
-    if (!freqMap[w]) freqMap[w] = 0;
-    freqMap[w] += 1;
-  }
-  return Object.keys(freqMap).map((word) => ({
-    text: word,
-    value: freqMap[word],
-  }));
-}
-
-function getRotationDegree() {
-  const rand = Math.random();
-  const degree = rand > 0.5 ? 60 : -60;
-  return rand * degree;
-}
-
-// words to be converted into cloud
-// const words = wordFreq(totoAfricaLyrics);
-// const words = wordFreq(totalWordCount);
-const words = wordFreq(totalWordString)
-
-const fontScale = scaleLog({
-  domain: [
-    Math.min(...words.map((w) => w.value)),
-    Math.max(...words.map((w) => w.value)),
-  ],
-  range: [10, 100],
-});
-const fontSizeSetter = (datum: WordData) => fontScale(datum.value);
-
-const fixedValueGenerator = () => 0.5;
-
-type SpiralType = "archimedean" | "rectangular";
-
-export default function InstanceCloud({
+export default function UsageData({
   width,
   height,
   showControls,
 }: ExampleProps) {
+
   const [spiralType, setSpiralType] = useState<SpiralType>("archimedean");
   const [withRotation, setWithRotation] = useState(false);
+  const [wordsList, setWordsList] = useState<string[]>([]);
+  const array : string[] = [];
 
-  useEffect(() => {
+  React.useEffect(() => {
     Axios.get("http://localhost:3001/api/get").then((response) => {
-      for(var i=0; i<response.data.length; i++) {
-        totalWordCount.push(response.data[i].instanceWord)
-        totalWordString+=(response.data[i].instanceWord + ' ')
-      }
+      setWordsList(response.data);
     });
-  });
+  }, []);
 
+  for(var i=0; i<wordsList.length; i++) {
+    array.push(wordsList[i].instanceWord)
+  }
+
+  const words = wordFreq(array);
+
+  function wordFreq(text) {
+    const words = text;
+    const freqMap: Record<string, number> = {};
+
+    for (const w of words) {
+      if (!freqMap[w]) freqMap[w] = 0;
+      freqMap[w] += 1;
+    }
+
+    return Object.keys(freqMap).map((word) => ({
+      text: word,
+      value: freqMap[word],
+    }));
+  }
+
+  function getRotationDegree() {
+    const rand = Math.random();
+    const degree = rand > 0.5 ? 60 : -60;
+    return rand * degree;
+  }
+
+  // words to be converted into cloud **********************************
+  // const words = wordFreq(totalInstanceWords)
+
+  const fontScale = scaleLog({
+    domain: [
+      Math.min(...words.map((w) => w.value)),
+      Math.max(...words.map((w) => w.value)),
+    ],
+    range: [10, 100],
+  });
+  const fontSizeSetter = (datum: WordData) => fontScale(datum.value);
+
+  const fixedValueGenerator = () => 0.5;
+
+  type SpiralType = "archimedean" | "rectangular";
+
+  const handleButtonClick = () => {
+    window.location.reload(false);
+  };
 
   return (
     <div className="wordcloud">

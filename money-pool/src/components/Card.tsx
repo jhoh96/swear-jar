@@ -27,15 +27,15 @@ export default function Card() {
   const handleClose = () => setOpen(false);
 
   const handleNameChange = (e) => {
-    setuserName(e.target.value);
+    setuserName(e.target.value.toUpperCase());
   };
 
   const handleWordChange = (e) => {
-    setinstanceWord(e.target.value);
+    setinstanceWord(e.target.value.toUpperCase());
   };
 
   const handleCostChange = (e) => {
-    setinstanceCost(e.target.value);
+    setinstanceCost(e.target.value.toUpperCase());
   };
 
   const submitInstance = () => {
