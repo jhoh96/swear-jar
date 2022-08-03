@@ -7,3 +7,16 @@
     height: 100%;
 
 }
+
+/**
+*    Main Page CSS
+* 
+*/
+.usage-data{
+    width: 10vh;
+    height: 100%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    margin-top: 5%;
+}

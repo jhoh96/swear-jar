@@ -2,22 +2,19 @@ import React, { useState, useEffect } from "react";
 import { Text } from "@visx/text";
 import { scaleLog } from "@visx/scale";
 import { Wordcloud } from "@visx/wordcloud";
-import { totoAfricaLyrics } from "./text.fixture";
-import { totalInstanceWords } from "../assets/words.ts";
-import { words as mappedWords } from "../assets/testWords.ts";
+import { paramore21Lyrics } from "../assets/wordsTest.ts";
 import Axios from "axios";
-import Button from "@mui/material/Button";
 
-interface ExampleProps {
-  width: number;
-  height: number;
-  showControls?: boolean;
-}
+// interface ExampleProps {
+//   width: number;
+//   height: number;
+//   showControls?: boolean;
+// }
 
-export interface WordData {
-  text: string;
-  value: number;
-}
+// export interface WordData {
+//   text: string;
+//   value: number;
+// }
 
 const colors = ["#143059", "#2F6B9A", "#82a6c2"];
 
@@ -32,20 +29,32 @@ export default function UsageData({
   const [wordsList, setWordsList] = useState<string[]>([]);
   const array : string[] = [];
 
+  /**
+   *  GET REQUEST FOR WORDS
+   *  Return Array[data]
+   */
   React.useEffect(() => {
     Axios.get("http://localhost:3001/api/get").then((response) => {
       setWordsList(response.data);
     });
   }, []);
 
+  /**
+   *  Sort Array[data] => Array[words]
+   */
   for(var i=0; i<wordsList.length; i++) {
     array.push(wordsList[i].instanceWord)
   }
 
-  const words = wordFreq(array);
+  // this runs the words to form the word cloud per visx
+  const words = wordFreq(paramore21Lyrics)
+  // const words = wordFreq(array);
 
   function wordFreq(text) {
-    const words = text;
+    // This if the input text is a STRING
+    const words: string[] = text.replace(/\./g, '').split(/\s/);
+    // This if the input text is AN ARRAY itself
+    // const words = text;   
     const freqMap: Record<string, number> = {};
 
     for (const w of words) {
@@ -65,9 +74,6 @@ export default function UsageData({
     return rand * degree;
   }
 
-  // words to be converted into cloud **********************************
-  // const words = wordFreq(totalInstanceWords)
-
   const fontScale = scaleLog({
     domain: [
       Math.min(...words.map((w) => w.value)),
@@ -76,14 +82,14 @@ export default function UsageData({
     range: [10, 100],
   });
   const fontSizeSetter = (datum: WordData) => fontScale(datum.value);
-
   const fixedValueGenerator = () => 0.5;
-
   type SpiralType = "archimedean" | "rectangular";
 
-  const handleButtonClick = () => {
-    window.location.reload(false);
-  };
+  /**
+   *  *******************************************************************************************
+   *                                    RETURN RETURN
+   *  *******************************************************************************************
+   */
 
   return (
     <div className="wordcloud">
